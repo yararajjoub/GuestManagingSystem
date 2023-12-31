@@ -1,0 +1,285 @@
+package src;
+
+
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
+public class Assignment1Guest {
+    static Scanner input = new Scanner(System.in);
+    // an array to use for testing, replace as needed to test your code
+    static String[][] guestList = {{"Adam Ason", "35"},
+            {"Berta Bson", "70"},
+            {"Ceasar Cson", "12"},
+            {"Weaal Stureson", "29"},
+            {"Oliver Ansson", "33"},
+            {"Emil Arvidsson", "22"},
+            {"Fanny Monson", "6"},
+            {"Feli Berg", "2"},
+            {"", ""},
+            {"", ""},
+    };
+
+    public static void main(String[] args) {
+// Add you code here with the main loop that handles the user's menu choices.
+        boolean running = true;
+        while (running) {
+            printMenu();
+            input = new Scanner(System.in);
+            int choice = input.nextInt();
+            switch (choice) {
+                case 1:  printGuestList();
+                    break;
+                case 2: printStatistics();
+                    break;
+                case 3: {
+                    System.out.println("Please Enter the guest name : ");
+                    try {
+                        String newGuestName = input.next();
+                        if (newGuestName.length() < 2) {
+                            System.out.println("This name is too short!");
+                            continue;
+                        } else if (!newGuestName.matches("[a-zA-Z]+")) {
+                            System.out.println("Letters only!");
+                            continue;
+                        }
+                        System.out.println("Please Enter the guest age : ");
+                        String newGuestAge = String.valueOf(input.nextInt());
+                        addGuest(newGuestName, newGuestAge);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Enter correct age please .. ");
+                    }
+                }
+                break;
+                case 4: {
+                    System.out.println("Please Enter guest index : ");
+                    int guestIndex = input.nextInt();
+                    System.out.println("Please Enter a new name for this guest index : ");
+                    String newGuestName = input.next();
+                    if (newGuestName.length() < 2) {
+                        System.out.println("This name is too short!");
+                        break;
+                    } else if (!newGuestName.matches("[a-zA-Z]+")) {
+                        System.out.println("Letters only!");
+                        break;
+                    }
+                    changeNameOfGuest(guestIndex, newGuestName);
+                }
+                break;
+                case 5: {
+                    try {
+                        System.out.println("Please Enter guest index : ");
+                        int guestIndex = input.nextInt();
+                        System.out.println("Please Enter a new age for this guest index : ");
+                        int newAge = input.nextInt();
+                        if (newAge <= 0) {
+                            System.out.println("Age must be a positive number !");
+                            break;
+                        }
+                        changeAgeOfGuest(guestIndex, String.valueOf(newAge)); // valueOf(String s)
+//Returns a Long object holding the value of the specified String.
+                    } catch (InputMismatchException e) {
+                        System.out.println("Age must be a number !");
+                    }
+
+                }
+                break;
+                case 6: {
+                    try {
+                        System.out.println("Please Enter first guest index : ");
+                        int guestIndex = input.nextInt();
+                        System.out.println("Please Enter second guest index : ");
+                        int guestIndex1 = input.nextInt();
+                        changePlaces(guestIndex, guestIndex1);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Not a valid indexes number");
+                    }
+                }
+                break;
+                case 7: {
+                    try {
+                        System.out.println("Please Enter guest index : ");
+                        int guestIndex = input.nextInt();
+                        removeGuest(guestIndex);
+                    } catch (InputMismatchException e) {
+                        System.out.println("Not a valid index number");
+                    }
+                }
+                break;
+
+                case 8: running = false;
+            }
+
+        }
+    }
+
+    public static void printGuestList() {
+        int counter = 1;
+        System.out.println("You chose to print the guest list");
+        for (int i = 0; i < guestList.length; i++) {
+            for (int j = 0; j < 1; j++) {
+                if (!guestList[i][j].equals(""))
+                    System.out.println( counter++ + "-Guest Name : " + guestList[i][j] + " , Age = " + guestList[i][j + 1]);
+            }
+        }
+        System.out.println("----------------------------------");
+    }
+
+    public static void printStatistics() {
+        int totalGuest = 0;
+        int totalAdults = 0;
+        int totalKids = 0;
+        int oldestAgeGuest = 0;
+        int youngerAgeGuest = 0;
+
+        System.out.println("You chose to print statistics");
+
+        for (int i = 0; i < guestList.length; i++) {
+            for (int j = 0; j < 1; j++) {
+                if (!guestList[i][j].equals("")) {
+                    totalGuest++; // för att vi vill summera dem.
+                }
+            }
+        } // nästlad loop ovan
+        System.out.println("Total guest : " + totalGuest);
+
+
+        for (String[] value : guestList) { //array efter : menas hela listan
+            for (int j = 0; j < 1; j++) {
+                if (!value[j].equals("")) {
+                    int age = Integer.parseInt(value[j + 1]);
+                    if (age >= 14) {
+                        totalAdults++; // för att vi vill summera/räkna antal vuxna dem.
+                    }
+                }
+            }
+        }
+        System.out.println("Total adults guest : " + totalAdults);
+
+
+        for (String[] strings : guestList) {
+            for (int j = 0; j < 1; j++) {
+                if (!strings[j].equals("")) {
+                    int age = Integer.parseInt(strings[j + 1]);
+                    if (age <= 13) {
+                        totalKids++;
+                    }
+                }
+            }
+        }
+        System.out.println("Total Kids guest : " + totalKids);
+
+
+        String guestName = null;
+        for (String[] strings : guestList) {
+            for (int j = 0; j < 1; j++) {
+                if (!strings[j].equals("")) {
+                    int age = Integer.parseInt(strings[j + 1]);
+                    if (age >= oldestAgeGuest) {
+                        oldestAgeGuest = age;
+                        guestName = strings[j];
+                    }
+                }
+            }
+        }
+        System.out.println("oldest guest in the guest list : " + guestName + " Age = " + oldestAgeGuest);
+        String guestName1 = "";
+        int age;
+
+        for (int i = 0; i < guestList.length; i++) {
+            if (!guestList[i + 1][0].equals("")) {
+                youngerAgeGuest = Integer.parseInt(guestList[i][1]);
+                age = Integer.parseInt(guestList[i + 1][1]);
+                if (age < youngerAgeGuest) {
+                    youngerAgeGuest = age;
+                    guestName1 = guestList[i + 1][0];
+                }
+            } else break;
+        }
+        System.out.println("Youngest Guest Name : " + guestName1 + " Age : " + youngerAgeGuest);
+    }
+// Add your code here
+
+    public static void addGuest(String name, String age) {
+        for (int i = 0; i < guestList.length; i++) {
+            if (!guestList[guestList.length - 1][0].equals("")) {
+                System.out.println("There is No more spaces to add a new guest ... ");
+                break;
+            }
+            if (guestList[i][0].equals("")) {
+                guestList[i][0] = name;
+                guestList[i][1] = age;
+                break;
+            }
+        }
+
+    }
+
+    public static void changeNameOfGuest(int index, String newName) {
+        System.out.println("You chose to change the name of a guest");
+        if (index < guestList.length) {
+            for (int i = 0; i < guestList.length; i++) {
+                if (i == index - 1) {
+                    guestList[i][0] = newName; // nollan är till arryen som tillhör namnet
+                    System.out.println("Name has been changed successfully !");
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void changeAgeOfGuest(int index, String newAge) {
+        System.out.println("You chose to change the age of a guest");
+        if (index < guestList.length) {
+            for (int i = 0; i < guestList.length; i++) {
+                if (i == index - 1) {
+                    guestList[i][1] = newAge; // ettan tillhör index/ arrayen åldern
+                    System.out.println("Age has been changed successfully !");
+                    break; // varför har vi break? för att sluta det control structure .. dvs när loop blir TRUE så kommer vi hoppa av denna loopen
+                    // annars kommer det fortsätta som vanlig efter parantesen
+                } // det kallas för un-labeled break ... den labeled används vid nästlad loop
+            }
+        } else System.out.println("This guest index in not even exist yet !");
+    }
+
+    public static void removeGuest(int index) {
+        System.out.println("You chose to remove a guest");
+        for (int i = 0; i < guestList.length; i++) {
+            if (!(index >= 0 && index < guestList.length)) {
+                System.out.println("The index you entered is not valid ! ");
+                break; // yakser 6ba3t kol al maojdood bl al block
+            }
+            if (i == index - 1) {
+                guestList[i][0] = "";
+                guestList[i][1] = "";
+                System.out.println("Name has been Removed successfully !");
+                break;
+            }
+        }
+
+    }
+
+    public static void changePlaces(int index1, int index2) {
+        System.out.println("You chose to switch places between index " + index1 + " and " + index2);
+        if (!(index1 > 0 && index2 > 0 && index1 < guestList.length && index2 < guestList.length)) {
+            System.out.println("The indexes you entered is not valid ! ");
+        } else {
+            String[] temp = guestList[index1 - 1];
+            guestList[index1 - 1] = guestList[index2 - 1];
+            guestList[index2 - 1] = temp;
+        }
+    }
+
+    public static void printMenu() {
+        System.out.println("Program menu");
+        System.out.println(
+                "1.skriva ut gästlistan \n"+
+                        "2.skriva ut statistik för gästlistan\n"+
+                        "3.lägga till en ny gäst\n"+
+                        "4.ändra en gästs namn i gästlistan\n"+
+                        "5.ändra en gästs ålder i gästlistan\n"+
+                        "6.byta plats på två gäster i gästlistan\n"+
+                        "7.ta bort en gäst ur gästlistan\n"+
+                        "8.avsluta programmet");
+    }
+
+}
